@@ -1,0 +1,27 @@
+<!doctype html><meta charset="utf-8"><title>motion fixture</title>
+<style>
+#a{width:100px;height:20px;background:#8e3340;transition:width 2s linear}
+#b{position:relative;width:20px;height:20px;background:#d89ca4;animation:slide 2s linear infinite}
+#d{width:20px;height:20px;background:#bdb3a9;animation:spin 2s linear infinite}
+@keyframes slide{from{left:0}to{left:100px}}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(90deg)}}
+</style>
+<div id="a"></div><div id="b"></div><div id="d"></div><div id="c" style="width:20px;height:20px;background:#fff"></div>
+<script src="../motion-debug.js"></script>
+<script>
+document.getElementById('c').animate([{opacity:0},{opacity:1}],{duration:2000,iterations:Infinity});
+setTimeout(function(){ document.getElementById('a').style.width='300px'; }, 50);
+setTimeout(function(){ MotionDebug.open(); MotionDebug.setScale(0.25); }, 200);
+setTimeout(function(){
+  var rates = document.getAnimations().map(function(a){return a.playbackRate});
+  var flagged = MotionDebug.flagged().map(function(f){return f.prop+':'+f.kind});
+  MotionDebug.pause();
+  var states = document.getAnimations().map(function(a){return a.playState});
+  var t0 = document.getAnimations()[0].currentTime;
+  MotionDebug.step();
+  var t1 = document.getAnimations()[0].currentTime;
+  var pre=document.createElement('pre'); pre.id='probe';
+  pre.textContent='RESULT '+JSON.stringify({rates:rates, scaleGlobal:window.__motionScale, flagged:flagged, pausedStates:states, stepDelta:+(t1-t0).toFixed(2), panel:!!document.querySelector('[data-motion-debug]')});
+  document.body.appendChild(pre);
+}, 900);
+</script>

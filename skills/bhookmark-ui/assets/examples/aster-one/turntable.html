@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en" data-theme="evening">
+<head>
+<meta charset="utf-8">
+<title>turntable</title>
+<link rel="stylesheet" href="../../bhookmark.tokens.css">
+<link rel="stylesheet" href="../../site-kit.css">
+<style>html, body { background: transparent !important; margin: 0; overflow: hidden; }</style>
+</head>
+<body>
+<!-- Renders ONLY the object at ?yaw=<deg>&pitch=<deg>, on a transparent background.
+     render-turntable.mjs screenshots this once per frame. Point <link> 1 at the theme whose colours you want baked in. -->
+<div id="camera"><div class="rig"><div class="object" id="object"></div></div></div>
+<script src="../../object-extrude.js"></script>
+<script src="manifest.js"></script>
+<script>
+  var q = new URLSearchParams(location.search);
+  var yaw = parseFloat(q.get('yaw') || '0'), pitch = parseFloat(q.get('pitch') || '-4');
+  var obj = document.getElementById('object');
+  ObjectExtrude.mount(obj, window.PRODUCT.object);
+  obj.style.transform = 'rotateX(' + pitch + 'deg) rotateY(' + yaw + 'deg)';
+</script>
+</body>
+</html>

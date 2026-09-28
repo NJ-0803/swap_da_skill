@@ -1,0 +1,139 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Cached read path with database fallback",
+    "output": "api-cache-fallback.html",
+    "quality_profile": "showcase",
+    "animation": "trace",
+    "viewBox": [
+      990,
+      350
+    ]
+  },
+  "components": [
+    {
+      "id": "browser",
+      "type": "external",
+      "label": "Browser",
+      "sublabel": "Visitor",
+      "pos": [
+        40,
+        150
+      ],
+      "size": [
+        130,
+        60
+      ]
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "API",
+      "sublabel": "request handler",
+      "pos": [
+        290,
+        150
+      ],
+      "size": [
+        130,
+        60
+      ]
+    },
+    {
+      "id": "cache",
+      "type": "database",
+      "label": "Redis cache",
+      "sublabel": "fast reads",
+      "pos": [
+        540,
+        150
+      ],
+      "size": [
+        130,
+        60
+      ]
+    },
+    {
+      "id": "db",
+      "type": "database",
+      "label": "PostgreSQL",
+      "sublabel": "source of truth",
+      "pos": [
+        790,
+        150
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "tag": "fallback"
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Server side (trusted)",
+      "wraps": [
+        "api",
+        "cache",
+        "db"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "browser-to-api",
+      "from": "browser",
+      "to": "api",
+      "label": "HTTPS",
+      "variant": "emphasis"
+    },
+    {
+      "id": "api-to-cache",
+      "from": "api",
+      "to": "cache",
+      "label": "1. lookup",
+      "variant": "emphasis"
+    },
+    {
+      "id": "api-to-db",
+      "from": "api",
+      "to": "db",
+      "label": "2. on a miss: read here",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "bottom",
+      "via": [
+        [
+          355,
+          270
+        ],
+        [
+          855,
+          270
+        ]
+      ],
+      "labelDy": 42
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "The path",
+      "items": [
+        "The API asks Redis first",
+        "A miss falls back to PostgreSQL",
+        "The answer refills the cache"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Trust",
+      "items": [
+        "The browser is untrusted",
+        "Cache and database accept the API only"
+      ]
+    }
+  ]
+}

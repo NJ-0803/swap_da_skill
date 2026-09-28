@@ -1,0 +1,9 @@
+:root { --bg: 21 20 18; --surface: 35 33 31; --ink: 243 238 231; --muted: 90 84 80; --line: 58 53 49; --gold: #d4a017; --accent: 142 51 64; --accent-ink: 150 140 130; }
+.btn { height: 36px; font-weight: 800; transition: all 300ms ease-in; outline: none; }
+.btn:hover { background: #e8b100; }
+.card { transition: width 200ms ease, box-shadow 200ms ease-in-out; }
+.pop { transform: scale(0); }
+.scene { transform-style: preserve-3d; overflow: hidden; filter: blur(2px); }
+.scene2 { transform-style: preserve-3d; opacity: 0.9; }
+@keyframes slide { from { left: 0; } to { left: 100px; } }
+@import url("https://fonts.googleapis.com/css2?family=Inter");

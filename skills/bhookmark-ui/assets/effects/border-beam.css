@@ -1,0 +1,23 @@
+/* border-beam.css | Bhookmark UI | a beam of light that travels around an element's border. Zero dependencies.
+ * Markup:  <div class="card beam"><span class="beam-ring" aria-hidden="true"></span> ...content... </div>
+ *          or  BorderBeam.apply(el)  (adds the ring for you).
+ * Tune on the element: --beam-w (border width, 2px), --beam-dur (one lap, 4.5s),
+ *   --beam-a / --beam-b (RGB triples for the beam head and tail; default --etch and --rose).
+ * The mask is static and only the light rotates (transform), so it stays on the GPU.
+ * Made for wide elements (cards, buttons). For a tall narrow one add class beam--tall. */
+.beam-ring {
+  position: absolute; inset: 0; border-radius: inherit; padding: var(--beam-w, 2px); overflow: hidden; pointer-events: none;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude;
+}
+.beam-ring::before {
+  content: ""; position: absolute; left: 50%; top: 50%; width: max(230%, 420px); aspect-ratio: 1; translate: -50% -50%;
+  background: conic-gradient(from 0deg, transparent 0 60%, rgb(var(--beam-b, var(--rose)) / 0) 60%, rgb(var(--beam-b, var(--rose)) / 0.55) 82%, rgb(var(--beam-a, var(--etch))) 98%, transparent 100%);
+  animation: beamSpin var(--beam-dur, 4.5s) linear infinite;
+}
+.beam--tall .beam-ring::before { width: max(230%, 420px); }
+.beam--tall { --beam-dur: 6s; }
+@keyframes beamSpin { to { rotate: 360deg; } }
+@media (prefers-reduced-motion: reduce) {
+  .beam-ring::before { animation: none; rotate: 45deg; opacity: 0.6; }   /* a still, quiet accent instead of motion */
+}

@@ -1,0 +1,321 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Runtime architecture",
+    "output": "runtime-overview.html",
+    "quality_profile": "showcase",
+    "animation": "trace",
+    "views": [
+      {
+        "id": "primary-path",
+        "label": "Primary path",
+        "focus": [
+          "browser",
+          "cdn",
+          "gateway",
+          "api",
+          "cache",
+          "db"
+        ],
+        "note": "A read from the browser to durable state, cache first."
+      },
+      {
+        "id": "trust",
+        "label": "Trust boundaries",
+        "focus": [
+          "browser",
+          "cdn",
+          "gateway",
+          "auth",
+          "cache",
+          "db"
+        ],
+        "note": "Where untrusted traffic ends and the data tier begins."
+      },
+      {
+        "id": "external",
+        "label": "External dependency",
+        "focus": [
+          "api",
+          "queue",
+          "worker",
+          "email"
+        ],
+        "note": "The one third-party call, kept off the request path."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "browser",
+      "type": "external",
+      "label": "Browser",
+      "sublabel": "visitor",
+      "pos": [
+        40,
+        270
+      ],
+      "size": [
+        130,
+        60
+      ]
+    },
+    {
+      "id": "cdn",
+      "type": "cloud",
+      "label": "CDN",
+      "sublabel": "edge cache",
+      "pos": [
+        210,
+        270
+      ],
+      "size": [
+        130,
+        60
+      ]
+    },
+    {
+      "id": "gateway",
+      "type": "cloud",
+      "label": "Gateway",
+      "sublabel": "TLS + rate limit",
+      "pos": [
+        420,
+        270
+      ],
+      "size": [
+        140,
+        60
+      ]
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "API",
+      "sublabel": "request handler",
+      "pos": [
+        620,
+        270
+      ],
+      "size": [
+        130,
+        60
+      ]
+    },
+    {
+      "id": "auth",
+      "type": "security",
+      "label": "Auth service",
+      "sublabel": "tokens",
+      "pos": [
+        620,
+        110
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "tag": "verify"
+    },
+    {
+      "id": "cache",
+      "type": "database",
+      "label": "Redis",
+      "sublabel": "cache",
+      "pos": [
+        850,
+        160
+      ],
+      "size": [
+        130,
+        60
+      ]
+    },
+    {
+      "id": "db",
+      "type": "database",
+      "label": "PostgreSQL",
+      "sublabel": "source of truth",
+      "pos": [
+        850,
+        345
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "tag": "fallback"
+    },
+    {
+      "id": "queue",
+      "type": "messagebus",
+      "label": "Job queue",
+      "sublabel": "async work",
+      "pos": [
+        620,
+        470
+      ],
+      "size": [
+        130,
+        60
+      ]
+    },
+    {
+      "id": "worker",
+      "type": "backend",
+      "label": "Worker",
+      "sublabel": "background jobs",
+      "pos": [
+        850,
+        470
+      ],
+      "size": [
+        130,
+        60
+      ]
+    },
+    {
+      "id": "email",
+      "type": "external",
+      "label": "Email provider",
+      "sublabel": "third party",
+      "pos": [
+        1050,
+        470
+      ],
+      "size": [
+        140,
+        60
+      ],
+      "tag": "external"
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Public internet and edge (untrusted)",
+      "wraps": [
+        "browser",
+        "cdn"
+      ]
+    },
+    {
+      "kind": "region",
+      "label": "Application network (trusted)",
+      "wraps": [
+        "gateway",
+        "api",
+        "auth",
+        "cache",
+        "db",
+        "queue",
+        "worker"
+      ]
+    },
+    {
+      "kind": "security-group",
+      "label": "Data tier: API only",
+      "wraps": [
+        "cache",
+        "db"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "browser-cdn",
+      "from": "browser",
+      "to": "cdn",
+      "label": "HTTPS",
+      "variant": "emphasis"
+    },
+    {
+      "id": "cdn-gateway",
+      "from": "cdn",
+      "to": "gateway",
+      "label": "miss",
+      "variant": "emphasis"
+    },
+    {
+      "id": "gateway-api",
+      "from": "gateway",
+      "to": "api",
+      "variant": "emphasis"
+    },
+    {
+      "id": "api-cache",
+      "from": "api",
+      "to": "cache",
+      "label": "1. lookup",
+      "variant": "emphasis"
+    },
+    {
+      "id": "api-db",
+      "from": "api",
+      "to": "db",
+      "label": "2. on a miss"
+    },
+    {
+      "id": "auth-api",
+      "from": "auth",
+      "to": "api",
+      "label": "verify",
+      "variant": "security",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDy": 24
+    },
+    {
+      "id": "api-queue",
+      "from": "api",
+      "to": "queue",
+      "label": "enqueue",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDy": 24
+    },
+    {
+      "id": "queue-worker",
+      "from": "queue",
+      "to": "worker"
+    },
+    {
+      "id": "worker-email",
+      "from": "worker",
+      "to": "email",
+      "label": "notify",
+      "variant": "dashed"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Primary path",
+      "items": [
+        "Browser, CDN, gateway, API over TLS",
+        "API reads Redis first",
+        "A miss falls back to PostgreSQL"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Trust boundaries",
+      "items": [
+        "Internet and CDN: untrusted",
+        "The gateway is the only door in",
+        "Data tier accepts the API alone"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "External dependency",
+      "items": [
+        "Email provider: third party",
+        "Called from the worker only",
+        "Queue absorbs its outages"
+      ]
+    }
+  ]
+}

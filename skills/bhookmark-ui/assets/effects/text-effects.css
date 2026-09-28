@@ -1,0 +1,35 @@
+/* text-effects.css | Bhookmark UI | animated headings. Zero dependencies. Add class "fx fx-<style>" or use TextFx.apply().
+ * Styles:  breathe  the whole heading dims and brightens on a loop (opacity only)
+ *          wave     the same, letter by letter, so a wave of brightness runs through the word
+ *          reveal   letters rise and un-blur once, in sequence
+ *          shimmer  a bright band sweeps across the text (paint, not compositor: use on one heading)
+ *          gradient a still ink-to-rose gradient fill
+ * Tune with custom properties on the element: --fx-dur (loop length), --fx-min (lowest opacity). The floors were
+ * chosen from measured contrast at the dim point (see references/effects.md); lowering them fails 4.5:1.
+ * Every style stops and shows the plain heading under prefers-reduced-motion. */
+.fx { --fx-min: 0.5; }                              /* dimmest opacity: 4.7:1 or better on the Evening skins */
+:root[data-theme="daylight"] .fx { --fx-min: 0.68; }   /* light skins need a higher floor to keep 4.5:1 at the dim point */
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.fx-word { display: inline-block; white-space: nowrap; }
+.fx-ch { display: inline-block; }
+
+.fx-breathe { animation: fxBreathe var(--fx-dur, 3.6s) ease-in-out infinite; }
+.fx-wave .fx-ch { animation: fxBreathe var(--fx-dur, 3.2s) ease-in-out infinite; animation-delay: calc(var(--i) * 90ms); }
+@keyframes fxBreathe { 0%, 100% { opacity: var(--fx-min, 0.5); } 50% { opacity: 1; } }
+
+.fx-reveal .fx-ch { opacity: 0; transform: translateY(0.45em); filter: blur(6px); animation: fxRise 700ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both; animation-delay: calc(var(--i) * 40ms + 120ms); }
+@keyframes fxRise { to { opacity: 1; transform: none; filter: none; } }
+
+.fx-shimmer {
+  background: linear-gradient(100deg, rgb(var(--ink) / 0.6) 30%, rgb(var(--ink)) 42%, rgb(var(--rose)) 50%, rgb(var(--ink)) 58%, rgb(var(--ink) / 0.6) 70%);
+  background-size: 260% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;
+  animation: fxShimmer var(--fx-dur, 3.4s) linear infinite;
+}
+@keyframes fxShimmer { from { background-position: 120% 0; } to { background-position: -120% 0; } }
+
+.fx-gradient { background: linear-gradient(90deg, rgb(var(--ink)) 0%, rgb(var(--rose)) 55%, rgb(var(--ink)) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fx, .fx .fx-ch { animation: none !important; opacity: 1 !important; transform: none !important; filter: none !important; }
+  .fx-shimmer { background-position: 50% 0; }
+}

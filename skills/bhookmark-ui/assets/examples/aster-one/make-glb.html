@@ -1,0 +1,44 @@
+<!doctype html>
+<meta charset="utf-8"><title>make-glb</title>
+<pre id="out">building...</pre>
+<!-- Builds the Aster One phone as a GLB with three.js and writes it, base64, into #out.
+     Run:  chrome --headless=new --virtual-time-budget=15000 --dump-dom make-glb.html  and decode #out.
+     This exists so the GLB backend can be tested against a real file. A company would export its own from Blender/CAD. -->
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/+esm';
+import { GLTFExporter } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/exporters/GLTFExporter.js/+esm';
+const out = document.getElementById('out');
+try {
+  function rr(w, h, r) { const s = new THREE.Shape(), x = -w / 2, y = -h / 2;
+    s.moveTo(x + r, y); s.lineTo(x + w - r, y); s.absarc(x + w - r, y + r, r, -Math.PI / 2, 0); s.lineTo(x + w, y + h - r); s.absarc(x + w - r, y + h - r, r, 0, Math.PI / 2);
+    s.lineTo(x + r, y + h); s.absarc(x + r, y + h - r, r, Math.PI / 2, Math.PI); s.lineTo(x, y + r); s.absarc(x + r, y + r, r, Math.PI, Math.PI * 1.5); return s; }
+  function unitUV(geo, w, h) { const p = geo.attributes.position, uv = new Float32Array(p.count * 2);
+    for (let i = 0; i < p.count; i++) { uv[i * 2] = (p.getX(i) + w / 2) / w; uv[i * 2 + 1] = (p.getY(i) + h / 2) / h; } geo.setAttribute('uv', new THREE.BufferAttribute(uv, 2)); return geo; }
+  const grad = (stops, w = 512, h = 1024, draw) => { const c = document.createElement('canvas'); c.width = w; c.height = h; const g = c.getContext('2d');
+    const gr = g.createLinearGradient(0, 0, w, h); stops.forEach(([o, col]) => gr.addColorStop(o, col)); g.fillStyle = gr; g.fillRect(0, 0, w, h); if (draw) draw(g, w, h);
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t; };
+  const screenTex = grad([[0, '#5a1f2a'], [0.55, '#2a1519'], [1, '#121010']], 512, 1024, (g, w, h) => {
+    g.fillStyle = '#000'; g.beginPath(); g.roundRect(w / 2 - 68, 46, 136, 40, 20); g.fill();
+    g.fillStyle = 'rgba(238,243,255,.92)'; g.font = '170px Georgia, serif'; g.textAlign = 'center'; g.fillText('12:00', w / 2, 360);
+    g.fillStyle = 'rgba(238,243,255,.6)'; g.font = '22px monospace'; g.fillText('TUESDAY 14', w / 2, 410);
+    g.fillStyle = 'rgba(238,243,255,.55)'; g.beginPath(); g.roundRect(w / 2 - 68, h - 34, 136, 8, 4); g.fill(); });
+  const backTex = grad([[0, '#6a2532'], [1, '#2e1218']]);
+  const root = new THREE.Group(); root.name = 'AsterOne';
+  const frameMat = new THREE.MeshStandardMaterial({ color: 0xe6e0d5, metalness: 0.9, roughness: 0.3 });
+  const bodyGeo = new THREE.ExtrudeGeometry(rr(260, 520, 44), { depth: 22, bevelEnabled: true, bevelThickness: 2, bevelSize: 2, bevelSegments: 5, curveSegments: 28 });
+  bodyGeo.translate(0, 0, -11); const body = new THREE.Mesh(bodyGeo, frameMat); body.name = 'Frame'; root.add(body);
+  const scrGeo = unitUV(new THREE.ShapeGeometry(rr(240, 500, 36), 28), 240, 500);
+  const screen = new THREE.Mesh(scrGeo, new THREE.MeshBasicMaterial({ map: screenTex })); screen.position.z = 13.3; screen.name = 'Display'; root.add(screen);
+  const backGeo = unitUV(new THREE.ShapeGeometry(rr(252, 512, 40), 28), 252, 512);
+  const back = new THREE.Mesh(backGeo, new THREE.MeshStandardMaterial({ map: backTex, roughness: 0.18, metalness: 0.15 })); back.rotation.y = Math.PI; back.position.z = -13.3; back.name = 'BackGlass'; root.add(back);
+  const bumpGeo = new THREE.ExtrudeGeometry(rr(120, 120, 24), { depth: 10, bevelEnabled: true, bevelThickness: 1.5, bevelSize: 1.5, bevelSegments: 4, curveSegments: 20 });
+  bumpGeo.translate(0, 0, -5); const bump = new THREE.Mesh(bumpGeo, new THREE.MeshStandardMaterial({ color: 0x15120f, metalness: 0.3, roughness: 0.45 }));
+  bump.position.set(48, 178 - 0, -13.3 - 6.5); bump.name = 'CameraModule'; root.add(bump);
+  const ring = new THREE.MeshStandardMaterial({ color: 0xa39c90, metalness: 1, roughness: 0.25 }), glass = new THREE.MeshStandardMaterial({ color: 0x100c0d, metalness: 0.2, roughness: 0.05 });
+  [[16, 208], [16, 148]].forEach(([x, y], i) => { const r = new THREE.Mesh(new THREE.CylinderGeometry(19, 19, 5, 40), ring); r.rotation.x = Math.PI / 2; r.position.set(x, y, -13.3 - 13 - 2.5);
+    const gl = new THREE.Mesh(new THREE.CylinderGeometry(12.5, 12.5, 5.5, 40), glass); gl.rotation.x = Math.PI / 2; gl.position.copy(r.position); gl.position.z -= 0.6; r.name = 'LensRing' + i; gl.name = 'Lens' + i; root.add(r, gl); });
+  const flash = new THREE.Mesh(new THREE.CylinderGeometry(7, 7, 3, 24), new THREE.MeshStandardMaterial({ color: 0xe9dcc8, roughness: 0.4 })); flash.rotation.x = Math.PI / 2; flash.position.set(76, 178, -13.3 - 13 - 1); flash.name = 'Flash'; root.add(flash);
+  new GLTFExporter().parse(root, (buf) => { const b = new Uint8Array(buf); let s = ''; for (let i = 0; i < b.length; i += 0x8000) s += String.fromCharCode.apply(null, b.subarray(i, i + 0x8000));
+    out.textContent = 'GLB_BASE64:' + btoa(s) + ':END'; }, (e) => { out.textContent = 'ERR ' + e; }, { binary: true });
+} catch (e) { out.textContent = 'ERR ' + e.message; }
+</script>
