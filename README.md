@@ -3,7 +3,7 @@
 **A Claude Code skill that builds websites as a stage, not a stacked page.**
 It works out what kind of site you are making, then builds it from a matching example: a product page, a portfolio, a single-task tool or a daily app.
 
-The skill inside is called `bhookmark-ui`. This repository is its home.
+The skill inside is called `swap-da-skill`. This repository is its home.
 
 [![swap_da_skill: 21 second tour](docs/media/swap_da_skill-preview.gif)](docs/media/swap_da_skill.mp4)
 
@@ -18,7 +18,7 @@ The skill inside is called `bhookmark-ui`. This repository is its home.
 | **Focus and lock** | Click a part and the object turns to it and holds still with that part on screen. |
 | **Depth cards** | Facts fly through the space beside the object at different depths. They pass by; they never orbit. |
 | **Five hero-object backends** | `extrude` (outline rings), `frames` (WebP turntable), `glb` (three.js model), `orbit` (chips on rings), `shader` (raw WebGL orb). Pick one, or none. |
-| **Themes are token files** | Burgundy Evening and Daylight ship as the Bhookmark identity; `midnight` is a black-and-blue skin. Swap the tokens and the whole page changes. |
+| **Themes are token files** | Burgundy Evening and Daylight ship as the default identity; `midnight` is a black-and-blue skin. Swap the tokens and the whole page changes. |
 | **A site kit** | One `window.SITE` manifest builds a sidebar shell (a bottom bar on phones) from blocks: hero, prose, specs, compare, faq, buy, timeline, work, flow, contact and more. |
 | **Audit mode** | `audit.mjs` scans an existing project and prints a Before / After / Why table. It reports first and never edits. Brand rules live in a config so a company can swap them. |
 | **Motion debug** | Slow-motion, pause and frame-step for any page, plus a linter for animations that touch layout or paint. |
@@ -41,7 +41,7 @@ The floor never moves, whatever the theme: text at 4.5:1, control outlines at 3:
 npx skills add NJ-0803/swap_da_skill
 ```
 
-Or copy `skills/bhookmark-ui/` into `~/.claude/skills/`. The folder name must stay `bhookmark-ui`; it has to match the `name:` in `SKILL.md`.
+Or copy `skills/swap-da-skill/` into `~/.claude/skills/`. The folder name must stay `swap-da-skill`; it has to match the `name:` in `SKILL.md`.
 
 Then just ask:
 
@@ -62,28 +62,28 @@ python3 -m http.server 8770
 | Example | URL |
 | --- | --- |
 | Gallery (start here) | <http://localhost:8770/docs/> |
-| Product, extruded object | `/skills/bhookmark-ui/assets/examples/aster-one/` |
-| Product, WebP turntable | `/skills/bhookmark-ui/assets/examples/aster-frames/` |
-| Product, GLB model | `/skills/bhookmark-ui/assets/examples/aster-glb/` |
-| Portfolio | `/skills/bhookmark-ui/assets/examples/portfolio/` |
-| Tool | `/skills/bhookmark-ui/assets/examples/tool/` |
-| App | `/skills/bhookmark-ui/assets/examples/app/` |
-| Shader hero | `/skills/bhookmark-ui/assets/examples/shader/` |
-| Effects (optional) | `/skills/bhookmark-ui/assets/examples/effects-demo.html` |
-| Diagrams (optional) | `/skills/bhookmark-ui/assets/examples/optional-diagrams/runtime-overview.html` |
+| Product, extruded object | `/skills/swap-da-skill/assets/examples/aster-one/` |
+| Product, WebP turntable | `/skills/swap-da-skill/assets/examples/aster-frames/` |
+| Product, GLB model | `/skills/swap-da-skill/assets/examples/aster-glb/` |
+| Portfolio | `/skills/swap-da-skill/assets/examples/portfolio/` |
+| Tool | `/skills/swap-da-skill/assets/examples/tool/` |
+| App | `/skills/swap-da-skill/assets/examples/app/` |
+| Shader hero | `/skills/swap-da-skill/assets/examples/shader/` |
+| Effects (optional) | `/skills/swap-da-skill/assets/examples/effects-demo.html` |
+| Diagrams (optional) | `/skills/swap-da-skill/assets/examples/optional-diagrams/runtime-overview.html` |
 
 Add `?motion-debug` to a page that loads `motion-debug.js` to open the slow-motion panel.
 
 Run the audit on your own project:
 
 ```bash
-node skills/bhookmark-ui/assets/audit.mjs path/to/your/project
+node skills/swap-da-skill/assets/audit.mjs path/to/your/project
 ```
 
 ## What is in the box
 
 ```
-skills/bhookmark-ui/
+skills/swap-da-skill/
   SKILL.md              the entry point: classify, then build
   references/           stage, site kit, archetypes, audit, motion debug, effects, render habits, diagrams
   assets/               stage engine, site kit, tokens and themes, object backends, audit, examples
@@ -97,7 +97,7 @@ docs/                   gallery page and media
 - The GLB backend loads three.js from a CDN on demand and does not compress models. Self-host it if you need to. It pauses while the tab is hidden or the object is off screen, so a background tab or an automated screenshot of a hidden tab shows an empty stage.
 - The frame and GLB examples ship generated assets (30 WebP frames, one 1.9 MB model) baked in the burgundy palette. For your own product, export your own.
 - No server-side or pre-rendering yet: the stage is client-side.
-- The burgundy palette and the no-gold rule are the Bhookmark identity. Another theme keeps the contrast floor, the 44px targets and the motion rules, and drops the rest.
+- The burgundy palette and the no-gold rule are the default identity. Another theme keeps the contrast floor, the 44px targets and the motion rules, and drops the rest.
 - The diagram feature depends on a separately installed tool and is off unless you ask for it.
 
 ## License

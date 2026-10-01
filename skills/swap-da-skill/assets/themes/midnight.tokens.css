@@ -1,0 +1,51 @@
+/* midnight.tokens.css | a company-style skin: black and electric blue, gradient-led.
+   Same roles and contrast floor as swap.tokens.css. Drop-in replacement: link this INSTEAD of it.
+   Evening: black to deep blue dominates the whole screen. Daylight: ice white to soft blue. */
+:root, :root[data-theme="evening"] {
+  --bg: 2 5 14; --surface: 9 17 40; --surface2: 15 27 60; --line: 28 42 84;
+  --control: 112 132 184;
+  --ink: 238 243 255; --muted: 176 192 226; --faint: 148 166 208;
+  --accent: 37 99 235; --accent-ink: 255 255 255; --accent-dim: 13 29 74; --rose: 147 197 253;
+  --scrim: 1 3 10;
+  --etch: 125 211 252;
+  --shadow-card: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 16px 36px -20px rgb(0 0 0 / 0.8);
+  --shadow-float: 0 50px 100px -30px rgb(0 0 0 / 0.9), 0 22px 44px -26px rgb(37 99 235 / 0.5);
+  /* the gradient IS the screen: black top-left, blue bloom behind the object, blue floor bottom-right */
+  --stage-bg:
+    radial-gradient(ellipse 75% 65% at 68% 48%, rgb(37 99 235 / 0.62), transparent 68%),
+    radial-gradient(ellipse 60% 50% at 100% 100%, rgb(29 78 216 / 0.75), transparent 70%),
+    linear-gradient(155deg, #000000 0%, #020a26 38%, #06184f 72%, #0b2a86 100%);
+  --shell-bg:
+    radial-gradient(ellipse 70% 60% at 100% 0%, rgb(37 99 235 / 0.35), transparent 65%),
+    linear-gradient(180deg, #01030b 0%, #041033 55%, #06184f 100%);
+  --side-bg: rgb(2 5 14 / 0.62);
+  --obj-rim: #d3dcf2; --obj-core: #56617f;
+  --obj-screen-a: 37 99 235; --obj-screen-b: 10 22 66; --obj-screen-c: 2 4 12;
+  --obj-back-a: 29 78 216; --obj-back-b: 3 8 26;
+  --font-display: "Instrument Serif", Georgia, "Times New Roman", serif;
+  --font-heading: "Inter Tight", Inter, system-ui, sans-serif;
+  --font-body: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --radius-card: 22px; --radius-control: 14px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  color-scheme: dark;
+}
+:root[data-theme="daylight"] {
+  --bg: 238 243 255; --surface: 255 255 255; --surface2: 222 231 250; --line: 200 213 242;
+  --control: 106 122 166;
+  --ink: 4 10 32; --muted: 50 64 100; --faint: 66 82 122;
+  --accent: 29 78 216; --accent-ink: 255 255 255; --accent-dim: 219 230 255; --rose: 29 78 216;
+  --scrim: 4 10 32;
+  --etch: 125 211 252;
+  --shadow-card: inset 0 1px 0 rgb(255 255 255 / 0.9), 0 14px 32px -20px rgb(20 40 100 / 0.3);
+  --shadow-float: 0 44px 90px -30px rgb(20 40 100 / 0.4), 0 20px 40px -26px rgb(37 99 235 / 0.3);
+  --stage-bg:
+    radial-gradient(ellipse 70% 60% at 68% 48%, rgb(96 145 255 / 0.45), transparent 68%),
+    linear-gradient(155deg, #ffffff 0%, #e8efff 45%, #b9ceff 100%);
+  --shell-bg: linear-gradient(180deg, #f5f8ff 0%, #dbe6ff 100%);
+  --side-bg: rgb(245 248 255 / 0.7);
+  --obj-rim: #e6ebf7; --obj-core: #8a96b3;
+  --obj-screen-a: 37 99 235; --obj-screen-b: 10 22 66; --obj-screen-c: 2 4 12;
+  --obj-back-a: 29 78 216; --obj-back-b: 3 8 26;
+  color-scheme: light;
+}

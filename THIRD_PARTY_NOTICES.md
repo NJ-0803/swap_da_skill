@@ -6,7 +6,7 @@ The code in this repository is MIT licensed (see `LICENSE`). The parts below bel
 
 ### Archify (generated diagram files)
 
-`skills/bhookmark-ui/assets/examples/optional-diagrams/*.html` were generated with [Archify](https://github.com/tt-a1i/archify) v2.17 and each
+`skills/swap-da-skill/assets/examples/optional-diagrams/*.html` were generated with [Archify](https://github.com/tt-a1i/archify) v2.17 and each
 contains Archify's viewer runtime. The two `*.architecture.json` files next to them are our own diagram descriptions.
 These files are an optional example: no other part of this repository loads them.
 
@@ -162,5 +162,5 @@ requests and scripts (`references/acquired-patterns.md`); nothing from it was co
 
 ## Names
 
-"Bhookmark", "Wordlark", "Pairfind", "Aster One", "Northline", "Halo" and "Mira Okafor" are used for examples. The product, company and person
+"Wordlark", "Pairfind", "Aster One", "Northline", "Halo" and "Mira Okafor" are used for examples. The product, company and person
 names in `examples/` are invented; any resemblance to a real product or person is coincidental. No real brand's logos or assets are used.
